@@ -4,27 +4,26 @@
 
 #include <GL/gl.h>
 #include <GL/glut.h>
-#include <GL/glext.h>
 #include <Eigen/OpenGLSupport>
 #include "Transform.hpp"
 
-Transform::Guard::Guard(bool entered): entered(entered) { }
+Transform::Guard::Guard(bool entered) : entered(entered) {}
 
 Transform::Guard::~Guard() {
-    if (entered) {
-        exit();
-    }
+  if (entered) {
+    exit();
+  }
 }
 
 void Transform::Guard::exit() {
-    glPopMatrix();
-    entered = false;
+  glPopMatrix();
+  entered = false;
 }
 
 Transform::Guard Transform::guard() const {
-    glPushMatrix();
-    glRotate(orientation);
-    glScale(scale);
-    glTranslate(position);
-    return Transform::Guard(true);
+  glPushMatrix();
+  glRotate(orientation);
+  glScale(scale);
+  glTranslate(position);
+  return Transform::Guard(true);
 }

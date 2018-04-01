@@ -59,7 +59,7 @@ public:
 class Axis : public Drawable {
   GLfloat size;
 public:
-  explicit Axis(GLfloat size=1): size(size) {}
+  explicit Axis(GLfloat size = 1) : size(size) {}
 
   inline void draw() override {
     const GLfloat r[] = {1.0f, 0.0f, 0.0f, 1.0f};
