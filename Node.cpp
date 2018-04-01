@@ -35,7 +35,7 @@ void Node::insert(std::initializer_list<std::shared_ptr<Node>> nodes) {
 
 void Node::draw() {
   auto guard = transform.guard();
-
+  Axis().draw();
   if (drawable != nullptr) {
     drawable->draw();
   }
