@@ -2,7 +2,6 @@
 #include <vector>
 #include <GL/gl.h>
 #include <GL/glut.h>
-#include <Eigen/OpenGLSupport>
 
 #include "Node.hpp"
 #include "Drawables.hpp"
@@ -18,33 +17,13 @@ std::shared_ptr<Node> root;
 void drawAxis(GLfloat size = 1.0f);
 void drawAxis(GLfloat size) {
     glPushMatrix();
-    glScalef(size, size, size);
-        glLineWidth(1);
-        glColor(red);
-        glBegin(GL_LINES);
-        glVertex(zero);
-        glVertex(up);
-        glEnd();
 
-        glColor(green);
-        glBegin(GL_LINES);
-        glVertex(zero);
-        glVertex(right);
-        glEnd();
-
-        glColor(blue);
-        glBegin(GL_LINES);
-        glVertex(zero);
-        glVertex(front);
-        glEnd();
     glPopMatrix();
 }
 
 void display()
 {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    drawAxis();
-
     glColor3f (1.0, 1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     root->draw();
@@ -63,17 +42,17 @@ void init ()
     glShadeModel (GL_SMOOTH);
     glEnable( GL_DEPTH_TEST );
     glEnable( GL_CULL_FACE );
-    GLfloat light_position[] = { 1.0, 1.0, -1.0, 0.0 };
+    GLfloat light_position[] = { 1.0f, 1.0f, -1.0f, 0.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    GLfloat light_direction[] = { -1.0, -1.0, 1.0, 0.0 };
+    GLfloat light_direction[] = { -1.0f, -1.0f, 1.0f, 0.0f };
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_direction);
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glEnable(GL_DEPTH_TEST);
 
-    root = std::make_shared<Node>("root");
+    root = std::make_shared<Node>("root", Transform());
     root->insert({
+        std::make_shared<Node>("child", Transform(), std::make_shared<Axis>()),
         std::make_shared<Node>("child", Transform(), std::make_shared<Teapot>())
     });
 }
@@ -85,7 +64,7 @@ void reshape (int w, int h)
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
     gluPerspective(45.0f, static_cast<GLdouble>(w) / static_cast<GLdouble>(h), .1f, 500.0f);
-    gluLookAt(0, 0, 10, 0, 0, 0, 0, 1, 0);
+    gluLookAt(10, 10, 10, 0, 0, 0, 0, 1, 0);
 }
 
 void update()
@@ -98,7 +77,7 @@ void update()
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
     auto screenWidth = glutGet(GLUT_SCREEN_WIDTH);
     auto screenHeight = glutGet(GLUT_SCREEN_HEIGHT);
