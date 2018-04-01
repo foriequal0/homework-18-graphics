@@ -1,15 +1,18 @@
 project(snu_graphics)
 cmake_minimum_required(VERSION 3.8)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "\
 -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization \
--Wformat=2 -Winit-self -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept \
+-Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs \
 -Woverloaded-virtual -Wredundant-decls -Wsign-promo \
--Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused \
+-Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused \
 -fsanitize=address -fno-omit-frame-pointer -fsanitize=leak -fsanitize=undefined")
 
-# eigen(헤더만 있는 라이브러리)가 아래 플래그가 켜져있으면 컴파일이 안돼서 끔.
-# -Wold-style-cast -Wctor-dtor-privacy -Wsign-conversion -Wshadow
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op -Wnoexcept -Wstrict-null-sentinel")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+endif()
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
@@ -49,5 +52,3 @@ target_link_libraries(snu_graphics
         ${OPENGL_LIBRARIES}
         ${GLUT_LIBRARIES}
         )
-
-set(CMAKE_VERBOSE_MAKEFILE 1)
