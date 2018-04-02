@@ -26,7 +26,7 @@ link_directories(${EXTERNAL_INSTALL_DIR}/lib)
 # https://stackoverflow.com/questions/21223163/how-to-tell-cmake-to-download-some-necessary-header-files-more-precisely-glm-ma
 ExternalProject_Add(eigen
         GIT_REPOSITORY "https://github.com/eigenteam/eigen-git-mirror"
-        GIT_TAG "master"
+        GIT_TAG "c3327783ac21591d0e87cca487c61a4cdea8dc4d"
         GIT_SHALLOW ON
         GIT_PROGRESS ON
         UPDATE_DISCONNECTED 1
