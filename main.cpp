@@ -65,7 +65,8 @@ void init() {
                         Node::create("LUA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>()),
                         Node::create("LLA", Transform().setPosition(0, -1.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
                             {
-                                Node::create("LLA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>())
+                                Node::create("LLA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>()),
+                                Node::create("LHand", Transform().setPosition(0, -1.0f, 0).setScale(0.1, 0.1, 0.1), std::make_shared<Sphere>())
                             })
                     }),
                 Node::create("RUA", Transform().setPosition(-(1.0f + 0.1f)/2.0f, 1.0f/2.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
@@ -73,7 +74,8 @@ void init() {
                         Node::create("RUA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>()),
                         Node::create("RLA", Transform().setPosition(0, -1.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
                             {
-                                Node::create("RLA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>())
+                                Node::create("RLA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>()),
+                                Node::create("RHand", Transform().setPosition(0, -1.0f, 0).setScale(0.1, 0.1, 0.1), std::make_shared<Sphere>())
                             })
                     }),
           }),
