@@ -22,8 +22,8 @@ void Transform::Guard::exit() {
 
 Transform::Guard Transform::guard() const {
   glPushMatrix();
-  glRotate(orientation);
-  glScale(scale);
   glTranslate(position);
+  glScale(scale);
+  glRotate(orientation);
   return Transform::Guard(true);
 }
