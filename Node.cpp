@@ -3,17 +3,30 @@
 //
 
 #include <algorithm>
+#include <iostream>
 #include "Node.hpp"
 
-Node::Node(
+std::shared_ptr<Node> Node::create(
     std::string name,
     Transform transform,
     std::shared_ptr<Drawable> drawable,
     std::vector<std::shared_ptr<Node>> childs)
-    : name(std::move(name)), transform(std::move(transform)), drawable(std::move(drawable)), childs(std::move(childs)) {
-  for (auto &&child: childs) {
-    childs_by_name.emplace(child->name, child);
+{
+  assert(std::all_of(std::begin(childs), std::end(childs), [](auto &&child) {
+    return child->parent.expired();
+  }));
+
+  auto node = std::make_shared<Node>();
+  node->name = std::move(name);
+  node->transform = std::move(transform);
+  node->drawable = std::move(drawable);
+
+  for (auto&& child: childs) {
+    child->parent = node;
+    node->childs_by_name.emplace(child->name, child);
   }
+  node->childs = std::move(childs);
+  return node;
 }
 
 void Node::insert(const std::shared_ptr<Node> &node) {
@@ -35,30 +48,37 @@ void Node::insert(std::initializer_list<std::shared_ptr<Node>> nodes) {
 
 void Node::draw() {
   auto guard = transform.guard();
-  Axis().draw();
+
   if (drawable != nullptr) {
     drawable->draw();
+  } else {
+// Axis().draw();
   }
   for (auto &&child: childs) {
     child->draw();
   }
 }
 
-auto Node::operator[](const std::string &name) -> std::shared_ptr<Node> {
+auto Node::get(const std::string &name) -> std::shared_ptr<Node> {
   auto it = childs_by_name.find(name);
   if (it != childs_by_name.end()) {
-    return (*it).second;
+    return it->second;
   }
+  assert(false);
   return nullptr;
 }
 
-auto Node::operator[](unsigned long index) -> std::shared_ptr<Node> {
-  unsigned long i = 0;
-  for (auto it = std::begin(childs); i < index && it != std::end(childs); i++, it++) {
-    auto &&child = *it;
-    if (i == index) {
-      return child;
-    }
+auto Node::get(unsigned long index) -> std::shared_ptr<Node> {
+  if (index < childs.size()) {
+    return childs[index];
   }
+  assert(false);
   return nullptr;
+}
+auto Node::operator[](const std::string &name) -> std::shared_ptr<Node> {
+  return get(name);
+}
+
+auto Node::operator[](size_t index) -> std::shared_ptr<Node> {
+  return get(index);
 }

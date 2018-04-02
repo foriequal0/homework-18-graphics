@@ -14,7 +14,7 @@
 #include "Drawables.hpp"
 
 class Node : public std::enable_shared_from_this<Node> {
-private:
+public:
   std::string name;
   Transform transform;
   std::shared_ptr<Drawable> drawable;
@@ -29,7 +29,7 @@ public:
   Node &operator=(const Node &) = default;
   Node &operator=(Node &&) = default;
 
-  explicit Node(
+  static std::shared_ptr<Node> create(
       std::string name,
       Transform transform = Transform(),
       std::shared_ptr<Drawable> drawable = nullptr,
@@ -39,6 +39,8 @@ public:
   void insert(const std::shared_ptr<Node> &node);
   void insert(std::initializer_list<std::shared_ptr<Node>> node);
   void draw();
+  auto get(const std::string &) -> std::shared_ptr<Node>;
+  auto get(size_t) -> std::shared_ptr<Node>;
   auto operator[](const std::string &) -> std::shared_ptr<Node>;
   auto operator[](size_t) -> std::shared_ptr<Node>;
 };
