@@ -46,13 +46,17 @@ void Node::insert(std::initializer_list<std::shared_ptr<Node>> nodes) {
   }
 }
 
+bool showaxis = getenv ("AXIS") != nullptr;
+
 void Node::draw() {
   auto guard = transform.guard();
 
   if (drawable != nullptr) {
     drawable->draw();
   } else {
-// Axis().draw();
+    if (showaxis) {
+      Axis().draw();
+    }
   }
   for (auto &&child: childs) {
     child->draw();
