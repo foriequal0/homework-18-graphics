@@ -12,7 +12,7 @@ std::shared_ptr<Node> Node::create(
     std::shared_ptr<Drawable> drawable,
     std::vector<std::shared_ptr<Node>> childs)
 {
-  assert(std::all_of(std::begin(childs), std::end(childs), [](auto &&child) {
+  assert(std::all_of(std::begin(childs), std::end(childs), [](const std::shared_ptr<Node> &child) {
     return child->parent.expired();
   }));
 
@@ -37,7 +37,7 @@ void Node::insert(const std::shared_ptr<Node> &node) {
 }
 
 void Node::insert(std::initializer_list<std::shared_ptr<Node>> nodes) {
-  assert(std::all_of(std::begin(nodes), std::end(nodes), [](auto &&node) {
+  assert(std::all_of(std::begin(nodes), std::end(nodes), [](const std::shared_ptr<Node> &node) {
     return node->parent.expired();
   }));
 

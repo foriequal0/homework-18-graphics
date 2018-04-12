@@ -1,7 +1,8 @@
 project(snu_graphics)
 cmake_minimum_required(VERSION 3.8)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "\
+-g \
 -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization \
 -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs \
 -Woverloaded-virtual -Wredundant-decls -Wsign-promo \
@@ -27,17 +28,12 @@ link_directories(${EXTERNAL_INSTALL_DIR}/lib)
 ExternalProject_Add(eigen
         GIT_REPOSITORY "https://github.com/eigenteam/eigen-git-mirror"
         GIT_TAG "c3327783ac21591d0e87cca487c61a4cdea8dc4d"
-        GIT_SHALLOW ON
         GIT_PROGRESS ON
-        UPDATE_DISCONNECTED 1
         CMAKE_CACHE_ARGS
             -DCMAKE_BUILD_TYPE:STRING=Release
             -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF
             -DCMAKE_INSTALL_PREFIX:STRING=${EXTERNAL_INSTALL_DIR}
             -DBUILD_TESTING:BOOL=OFF
-        LOG_CONFIGURE ON
-        LOG_BUILD ON
-        LOG_INSTALL ON
         )
 
 include_directories(${EXTERNAL_INSTALL_DIR}/include/eigen3)
