@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "\
 -g \
 -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization \
--Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs \
+-Wformat=2 -Winit-self -Wmissing-include-dirs \
 -Woverloaded-virtual -Wredundant-decls -Wsign-promo \
 -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused \
 -fsanitize=address -fno-omit-frame-pointer -fsanitize=leak -fsanitize=undefined")
@@ -39,7 +39,7 @@ ExternalProject_Add(eigen
 include_directories(${EXTERNAL_INSTALL_DIR}/include/eigen3)
 include_directories(${EXTERNAL_INSTALL_DIR}/include/eigen3/unsupported)
 
-set(SOURCE_FILES main.cpp Const.cpp Const.hpp Transform.cpp Drawables.hpp Drawables.hpp Node.cpp Node.hpp)
+set(SOURCE_FILES main.cpp Const.hpp Transform.cpp Drawables.hpp Drawables.hpp Node.cpp Node.hpp View.cpp View.hpp)
 add_executable(snu_graphics ${SOURCE_FILES})
 add_dependencies(snu_graphics eigen)
 add_definitions(-DGL_GLEXT_PROTOTYPES=1)

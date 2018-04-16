@@ -7,25 +7,25 @@
 
 #include <Eigen/Dense>
 
-extern const Eigen::Vector3f zero;
-extern const Eigen::Vector3f ones;
+static const Eigen::Vector3f zero = {0.0, 0.0, 0.0};
+static const Eigen::Vector3f ones = {1.0, 1.0, 1.0};
 
-extern const Eigen::Vector3f black;
-extern const Eigen::Vector3f white;
-extern const Eigen::Vector3f red;
-extern const Eigen::Vector3f yellow;
-extern const Eigen::Vector3f green;
-extern const Eigen::Vector3f cyan;
-extern const Eigen::Vector3f blue;
-extern const Eigen::Vector3f magenta;
+static const Eigen::Vector3f black = {0.0, 0.0, 0.0};
+static const Eigen::Vector3f white = {1.0, 1.0, 1.0};
+static const Eigen::Vector3f red = {1.0, 0.0, 0.0};
+static const Eigen::Vector3f yellow = {1.0, 1.0, 0.0};
+static const Eigen::Vector3f green = {0.0, 1.0, 0.0};
+static const Eigen::Vector3f cyan = {0.0, 1.0, 1.0};
+static const Eigen::Vector3f blue = {0.0, 0.0, 1.0};
+static const Eigen::Vector3f magenta = {1.0, 0.0, 1.0};
 
-extern const Eigen::Vector3f up;
-extern const Eigen::Vector3f down;
-extern const Eigen::Vector3f left;
-extern const Eigen::Vector3f right;
-extern const Eigen::Vector3f back;
-extern const Eigen::Vector3f front;
+static const Eigen::Vector3f up = {0.0, 1.0, 0.0};
+static const Eigen::Vector3f down = {0.0, -1.0, 0.0};
+static const Eigen::Vector3f left = {-1.0, 0.0, 0.0};
+static const Eigen::Vector3f right = {1.0, 0.0, 0.0};
+static const Eigen::Vector3f back = {0.0, 0.0, -1.0};
+static const Eigen::Vector3f front = {0.0, 0.0, 1.0};
 
-extern const Eigen::Quaternionf identity;
+static const Eigen::Quaternionf identity = {1.0f, 0.0f, 0.0f, 0.0f};
 
 #endif //SNU_GRAPHICS_CONST_H

@@ -41,6 +41,7 @@ public:
       * Eigen::Quaternionf{cosf(radZ), 0, 0, sinf(radZ)};
     return *this;
   }
+#undef radianf
 };
 
 class Transform::Guard {
