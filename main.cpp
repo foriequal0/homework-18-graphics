@@ -149,12 +149,14 @@ Eigen::Vector2f normalizeXY(int x, int y) {
 }
 
 Eigen::Quaternionf toQuaternion(Eigen::Vector3f x) {
-  return Eigen::Quaternionf(0, x[0], x[1], x[1]);
+  auto a = cosf(x.norm());
+  Eigen::Vector3f v = x.normalized() * sinf(x.norm());
+  return Eigen::Quaternionf(a, v[0], v[1], v[2]);
 }
-Eigen::Vector3f getVirtualTrackballXYZ(const Eigen::Vector2f &a) {
+Eigen::Vector3f getVirtualTrackballXYZ(const Eigen::Vector2f a, const Eigen::Vector3f right, const Eigen::Vector3f up, const Eigen::Vector3f front) {
   const auto xy = (a.norm() > 1)? a.normalized() : a;
   const auto Z = sqrtf(std::max(0.0f, 1.0f-xy.squaredNorm()));
-  return Eigen::Vector3f(xy.x(), xy.y(), -Z).normalized();
+  return (xy.x() * right + xy.y() * up + Z * front).normalized();
 }
 
 void motion(int x, int y) {
@@ -172,13 +174,18 @@ void motion(int x, int y) {
     viewCenter = initialCenter + (u_right * diff[0] + u_up * diff[1]) * distance/projDist;
   }
   else if (rightButton) {
-    const auto from = getVirtualTrackballXYZ(mousePos * 2);
-    const auto to = getVirtualTrackballXYZ(curr * 2);
+    const auto u_dir = initialDir;
+    const auto u_front = -initialDir;
+    const auto u_up = initialUp;
+    const auto u_right = initialUp.cross(initialDir).normalized();
 
-    const auto rot = Eigen::Quaternionf(cosf(0.01), sinf(0.01), 0, 0);//Eigen::Quaternionf::FromTwoVectors(from, to);
+    const auto from = getVirtualTrackballXYZ(mousePos * 2, u_right, u_up, u_front);
+    const auto to = getVirtualTrackballXYZ(curr * 2, u_right, u_up, u_front);
 
-    camDir = (rot * toQuaternion(camDir) * rot.inverse()).vec();
-    camUp = (rot * toQuaternion(camUp) * rot.inverse()).vec();
+    const auto rot = Eigen::Quaternionf::FromTwoVectors(from, to);
+
+    camDir = (rot * toQuaternion(initialDir) * rot.inverse()).vec().normalized();
+    camUp = (rot * toQuaternion(initialUp) * rot.inverse()).vec().normalized();
   }
   setView();
 }
