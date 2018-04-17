@@ -163,22 +163,17 @@ void motion(int x, int y) {
   const auto curr = normalizeXY(x, y);
   const auto projDist = 0.5f / tanf(radianf(fov)/2);
 
-  if (leftButton) {
-    const auto u_dir = camDir;
-    const auto u_front = -camDir;
-    const auto u_up = camUp;
-    const auto u_right = camUp.cross(camDir).normalized();
+  const auto u_dir = initialDir;
+  const auto u_front = -initialDir;
+  const auto u_up = initialUp;
+  const auto u_right = initialUp.cross(initialDir).normalized();
 
+  if (leftButton) {
     const auto diff = curr - mousePos;
 
     viewCenter = initialCenter + (u_right * diff[0] + u_up * diff[1]) * distance/projDist;
   }
   else if (rightButton) {
-    const auto u_dir = initialDir;
-    const auto u_front = -initialDir;
-    const auto u_up = initialUp;
-    const auto u_right = initialUp.cross(initialDir).normalized();
-
     const auto from = getVirtualTrackballXYZ(mousePos * 2, u_right, u_up, u_front);
     const auto to = getVirtualTrackballXYZ(curr * 2, u_right, u_up, u_front);
 
