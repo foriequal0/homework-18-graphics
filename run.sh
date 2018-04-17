@@ -7,8 +7,6 @@ GDB_BT_SCRIPT=`dirname "$PWD/$0"`/gdb_bt_script
 
 exec &> >(tee "${RUN_LOG}")
 
-dpkg -l > "$PWD/dpkg.log"
-
 mkdir -p build
 pushd build > /dev/null
 
