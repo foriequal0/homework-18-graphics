@@ -1,13 +1,7 @@
-### How to build
+### How to build & run
 
 ```sh
-mkdir build && cd build
-cmake ..
-make
-./snu_graphics
-# to visualize local frame axis
-export AXIS=1
-./snu_graphics
+bash ./run.sh
 ```
 
 ### Known problems
