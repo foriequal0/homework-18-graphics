@@ -10,7 +10,7 @@ exec &> >(tee "${RUN_LOG}")
 mkdir -p build
 pushd build > /dev/null
 
-cmake ..
+cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON
 make
 
 export ASAN_OPTIONS=detect_leaks=0
