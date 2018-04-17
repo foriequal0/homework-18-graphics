@@ -224,7 +224,7 @@ void mouse(int button, int state, int x, int y) {
     if ( state == GLUT_DOWN )
     {
       if (glutGetModifiers() & GLUT_ACTIVE_SHIFT) {
-        fov = std::min(fov * 1.1f, 179.0f);
+        fov = std::max(fov/1.1f, 10.0f);
       } else {
         distance /= 1.1;
       }
@@ -234,7 +234,7 @@ void mouse(int button, int state, int x, int y) {
     if ( state == GLUT_DOWN )
     {
       if (glutGetModifiers() & GLUT_ACTIVE_SHIFT) {
-        fov = std::max(fov/1.1f, 10.0f);
+        fov = std::min(fov * 1.1f, 179.0f);
       } else {
         distance *= 1.1;
       }
