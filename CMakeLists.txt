@@ -39,7 +39,7 @@ ExternalProject_Add(eigen
 include_directories(${EXTERNAL_INSTALL_DIR}/include/eigen3)
 include_directories(${EXTERNAL_INSTALL_DIR}/include/eigen3/unsupported)
 
-set(SOURCE_FILES main.cpp Const.hpp Transform.cpp Drawables.hpp Drawables.hpp Node.cpp Node.hpp View.cpp View.hpp)
+set(SOURCE_FILES main.cpp Const.hpp Transform.cpp Drawables.hpp Drawables.hpp Node.cpp Node.hpp)
 add_executable(snu_graphics ${SOURCE_FILES})
 add_dependencies(snu_graphics eigen)
 add_definitions(-DGL_GLEXT_PROTOTYPES=1)
