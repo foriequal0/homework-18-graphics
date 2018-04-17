@@ -13,5 +13,6 @@ pushd build > /dev/null
 cmake ..
 make
 
+export ASAN_OPTIONS=detect_leaks=0
 gdb -n -batch -x "${GDB_BT_SCRIPT}" --args ./snu_graphics
 popd > /dev/null
