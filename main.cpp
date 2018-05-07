@@ -194,6 +194,8 @@ void mouse(int button, int state, int x, int y) {
     {
       mousePos = normalizeXY(x, y);
       initialCenter = viewCenter;
+      initialDir = camDir;
+      initialUp = camUp;
       leftButton = true;
     }
     else if ( state == GLUT_UP )
