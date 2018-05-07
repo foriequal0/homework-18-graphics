@@ -36,7 +36,6 @@ float Bezier::interpolate<float>(float t, float b0, float b1, float b2, float b3
   return T * M * G;
 }
 
-
 template<>
 Eigen::Quaternionf DeCasteljau::interpolate<Eigen::Quaternionf>(float t, Eigen::Quaternionf b0, Eigen::Quaternionf b1, Eigen::Quaternionf b2, Eigen::Quaternionf b3) {
   Eigen::Quaternionf a00 = b0.slerp(t, b1);

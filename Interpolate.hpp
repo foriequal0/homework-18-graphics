@@ -71,29 +71,20 @@ T catmull_rom(const std::vector<T>& points, int index, float t, bool closed=true
   return Method::template interpolate<T>(t, p0, p1, p2, p3);
 }
 
-
-inline Eigen::Quaternionf safe_slerp(float t, const Eigen::Quaternionf& from, const Eigen::Quaternionf& to)
-{
-  Eigen::Quaternionf checker = from.inverse() * to;
-
-  if(checker.w() > 0.9999)
-    return from;
-  else
-    return from.slerp(t, to);
-}
-
 inline Eigen::Quaternionf quaternion_catmull_rom(const std::vector<Eigen::Quaternionf>& points, int index, float t, bool closed=true) {
   assert((closed && index < (int)points.size())
              || (!closed && index < (int)points.size()-1));
 
-  const auto& p0 = safe_get(points, closed, index);
-  const auto& p3 = safe_get(points, closed, index+1);
 
-  const auto &a = safe_get(points, closed, index+2);
-  const auto &b = safe_get(points, closed, index-1);
+  const auto& b0 = safe_get(points, closed, index-1);
+  const auto& b1 = safe_get(points, closed, index);
+  const auto& b2 = safe_get(points, closed, index+1);
+  const auto& b3 = safe_get(points, closed, index+2);
 
-  Eigen::Quaternionf p1 = p0 * b.conjugate() * safe_slerp(1.0f/6.0f, b, p3);
-  Eigen::Quaternionf p2 = p3 * a.conjugate() * safe_slerp(1.0f/6.0f, a, p0);
+  const auto& p0 = b1;
+  Eigen::Quaternionf p1 = b1 * expq(logq(b0.conjugate() * b1)/6.0f);
+  Eigen::Quaternionf p2 = b2 * expq(-logq(b1.conjugate() * b3)/6.0f);
+  const auto& p3 = b2;
 
   return DeCasteljau::template interpolate<Eigen::Quaternionf>(t, p0, p1, p2, p3);
 }
