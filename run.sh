@@ -13,6 +13,7 @@ pushd build > /dev/null
 cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON
 make
 
-export ASAN_OPTIONS=detect_leaks=0
-gdb -n -batch -x "${GDB_BT_SCRIPT}" --args ./snu_graphics
 popd > /dev/null
+
+export ASAN_OPTIONS=detect_leaks=0
+gdb -n -batch -x "${GDB_BT_SCRIPT}" --args ./build/snu_graphics
