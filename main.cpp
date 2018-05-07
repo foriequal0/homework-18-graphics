@@ -59,54 +59,9 @@ void init() {
   root = Node::create("root", Transform());
   root->insert(
       {
-          Node::create("UB", Transform().setPosition(0, 1, 0), nullptr, std::vector<std::shared_ptr<Node>>
-              {
-                Node::create("UB_shape", Transform().setScale(1, 1, 0.3), std::make_shared<Cube>()),
-                Node::create("H", Transform().setPosition(0, 1, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                    {
-                      Node::create("H_shape", Transform().setScale(0.5, 0.5, 0.5).setOrientation(0, -90, 0), std::make_shared<Teapot>())
-                    }),
-                Node::create("LUA", Transform().setPosition((1.0f + 0.1f)/2.0f, 1.0f/2.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                    {
-                        Node::create("LUA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>()),
-                        Node::create("LLA", Transform().setPosition(0, -1.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                            {
-                                Node::create("LLA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>()),
-                                Node::create("LHand", Transform().setPosition(0, -1.0f, 0).setScale(0.1, 0.1, 0.1), std::make_shared<Sphere>())
-                            })
-                    }),
-                Node::create("RUA", Transform().setPosition(-(1.0f + 0.1f)/2.0f, 1.0f/2.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                    {
-                        Node::create("RUA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>()),
-                        Node::create("RLA", Transform().setPosition(0, -1.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                            {
-                                Node::create("RLA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.1, 1, 0.1), std::make_shared<Cube>()),
-                                Node::create("RHand", Transform().setPosition(0, -1.0f, 0).setScale(0.1, 0.1, 0.1), std::make_shared<Sphere>())
-                            })
-                    }),
-          }),
-          Node::create("LB", Transform(), nullptr, std::vector<std::shared_ptr<Node>>{
-              Node::create("LB_shape", Transform().setScale(1, 1, 0.3), std::make_shared<Cube>()),
-              Node::create("LUL", Transform().setPosition((1.0f - 0.4f)/2.0f, -1.0f/2.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                  {
-                      Node::create("LUL_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.3, 1, 0.3), std::make_shared<Cube>()),
-                      Node::create("LLL", Transform().setPosition(0, -1.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                          {
-                              Node::create("LLA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.3, 1, 0.3), std::make_shared<Cube>()),
-                              Node::create("LF", Transform().setPosition(0, -1, 0.25).setScale(0.3, 0.2, 0.5), std::make_shared<Cube>())
-                          })
-                  }),
-              Node::create("RUL", Transform().setPosition(-(1.0f - 0.4f)/2.0f, -1.0f/2.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                  {
-                      Node::create("RUL_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.3, 1, 0.3), std::make_shared<Cube>()),
-                      Node::create("RLL", Transform().setPosition(0, -1.0f, 0), nullptr, std::vector<std::shared_ptr<Node>>
-                          {
-                              Node::create("RLA_shape", Transform().setPosition(0, -0.5f, 0).setScale(0.3, 1, 0.3), std::make_shared<Cube>()),
-                              Node::create("RF", Transform().setPosition(0, -1, 0.25).setScale(0.3, 0.2, 0.5), std::make_shared<Cube>())
-                          })
-                  }),
-          })
-      });
+          Node::create("test", Transform(), std::make_shared<SweptSurface>(SweptSurface::create(SweptSurfaceData::load("data/model.txt"))))
+      }
+  );
   last_time_point = steady_clock::now();
 }
 
@@ -153,6 +108,7 @@ Eigen::Quaternionf toQuaternion(Eigen::Vector3f x) {
   Eigen::Vector3f v = x.normalized() * sinf(x.norm());
   return Eigen::Quaternionf(a, v[0], v[1], v[2]);
 }
+
 Eigen::Vector3f getVirtualTrackballXYZ(const Eigen::Vector2f a, const Eigen::Vector3f right, const Eigen::Vector3f up, const Eigen::Vector3f front) {
   const auto xy = (a.norm() > 1)? a.normalized() : a;
   const auto Z = sqrtf(std::max(0.0f, 1.0f-xy.squaredNorm()));
@@ -256,24 +212,6 @@ void update() {
   s = (s>0)?powf(s, 0.75):-powf(-s, 0.75);
   float c = cosf(r * 2 * M_PI);
 
-  root->transform.setPosition(0, abs(sinf(r * 2 * M_PI)) * 0.3, 0);
-  auto ub = root->get("UB");
-  ub->transform.setOrientation(10 - sinf(r*2 * 2 * M_PI) * 5, s * 20, 0);
-  ub->get("H")->transform.setOrientation(0, -s * 15, 0);
-
-  ub->get("LUA")->transform.setOrientation(s * 45, (s+1) * 5, 0);
-  ub->get("RUA")->transform.setOrientation(- s * 45, (-s+1) * 5, 0);
-
-  ub->get("LUA")->get("LLA")->transform.setOrientation(-135+(s+0.5) * 10, 0, 0);
-  ub->get("RUA")->get("RLA")->transform.setOrientation(-135+(-s+0.5) * 10, 0, 0);
-
-  auto lb = root->get("LB");
-  lb->transform.setOrientation(cosf(r*2 * 2 * M_PI) * 5, -s * 20, 0);
-  lb->get("LUL")->transform.setOrientation(-s * 60 - 30, (-s) * 5, (-s) * 5);
-  lb->get("RUL")->transform.setOrientation(s * 60 - 30, (s) * 5, (s) * 5);
-
-  lb->get("LUL")->get("LLL")->transform.setOrientation(s * 60 + 60, 0, 0);
-  lb->get("RUL")->get("RLL")->transform.setOrientation(-s * 60 + 60, 0, 0);
   glutPostRedisplay();
 }
 

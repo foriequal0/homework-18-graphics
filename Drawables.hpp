@@ -11,29 +11,30 @@
 #include <Eigen/OpenGLSupport>
 
 #include "Const.hpp"
+#include "SweptSurfaceData.hpp"
 
 class Drawable {
 public:
-  virtual void draw() = 0;
+  virtual void draw() const = 0;
 };
 
-class Cube : public Drawable {
+class Cube final: public Drawable {
 public:
-  inline void draw() override {
+  inline void draw() const override {
     glutSolidCube(1);
   }
 };
 
-class Sphere : public Drawable {
+class Sphere final: public Drawable {
 public:
-  inline void draw() override {
+  inline void draw() const override {
     glutSolidSphere(1, 16, 16);
   }
 };
 
-class Cylinder : public Drawable {
+class Cylinder final: public Drawable {
 public:
-  inline void draw() override {
+  inline void draw() const override {
     const auto slices = 16;
 
     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
@@ -68,38 +69,38 @@ public:
   }
 };
 
-class Cone : public Drawable {
+class Cone final: public Drawable {
 public:
-  inline void draw() override {
+  inline void draw() const override {
     glutSolidCone(1, 1, 16, 1);
   }
 };
 
-class Torus : public Drawable {
+class Torus final: public Drawable {
   GLdouble innerRadius;
 public:
   explicit Torus(GLdouble innerRadius) : innerRadius(innerRadius) {}
 
-  inline void draw() override {
+  inline void draw() const override {
     glutSolidTorus(innerRadius, 1, 8, 16);
   }
 };
 
-class Teapot : public Drawable {
+class Teapot final: public Drawable {
 public:
-  inline void draw() override {
+  inline void draw() const override {
     glFrontFace(GL_CW);
     glutSolidTeapot(1);
     glFrontFace(GL_CCW);
   }
 };
 
-class Axis : public Drawable {
+class Axis final: public Drawable {
   GLfloat size;
 public:
   explicit Axis(GLfloat size = 1) : size(size) {}
 
-  inline void draw() override {
+  inline void draw() const override {
     const GLfloat r[] = {1.0f, 0.0f, 0.0f, 1.0f};
     const GLfloat g[] = {0.0f, 1.0f, 0.0f, 1.0f};
     const GLfloat b[] = {0.0f, 0.0f, 1.0f, 1.0f};
@@ -124,6 +125,29 @@ public:
     glEnd();
     glPopAttrib();
   }
+};
+
+struct Vertex
+{
+  GLfloat position[3];
+  GLfloat normal[3];
+
+  Vertex(Eigen::Vector3f p, Eigen::Vector3f n) {
+    position[0] = p[0];
+    position[1] = p[1];
+    position[2] = p[2];
+    normal[0] = n[0];
+    normal[1] = n[1];
+    normal[2] = n[2];
+  }
+};
+
+class SweptSurface final: public Drawable {
+  std::vector<Vertex> vertices;
+public:
+  void draw() const override;
+
+  static SweptSurface create(const SweptSurfaceData &data);
 };
 
 #endif //SNU_GRAPHICS_DRAWABLES_H

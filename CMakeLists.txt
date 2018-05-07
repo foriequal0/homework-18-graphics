@@ -23,7 +23,13 @@ include_directories(eigen3 eigen3/unsupported)
 # https://stackoverflow.com/questions/21223163/how-to-tell-cmake-to-download-some-necessary-header-files-more-precisely-glm-ma
 
 
-set(SOURCE_FILES main.cpp Const.hpp Transform.cpp Drawables.hpp Drawables.hpp Node.cpp Node.hpp)
+set(SOURCE_FILES
+        main.cpp
+        Transform.cpp
+        Drawables.cpp
+        Node.cpp
+        SweptSurfaceData.cpp
+        Interpolate.cpp)
 add_executable(snu_graphics ${SOURCE_FILES})
 add_definitions(-DGL_GLEXT_PROTOTYPES=1)
 target_link_libraries(snu_graphics
