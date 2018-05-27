@@ -54,8 +54,7 @@ protected:
 public:
   explicit comment_filter_streambuf(std::streambuf *src)
       : src(src), in_comment(false) {
-    auto front = &buf.front();
-    setg(front, front + 1, front + 1);
+    setg(nullptr, nullptr, nullptr);
   }
 };
 
