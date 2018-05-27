@@ -10,6 +10,7 @@
 #include <vector>
 #include <Eigen/Dense>
 #include "Transform.hpp"
+#include "Unit.hpp"
 
 namespace snu_graphics {
 enum class CurveType {
@@ -27,6 +28,8 @@ struct SweptSurfaceData {
   CurveType curve_type;
   int num_control_points;
   std::vector<CrossSection> cross_sections;
+
+  std::vector<Triangle> sweep_surface() const;
 
   static SweptSurfaceData load(const std::string &filename);
   static SweptSurfaceData load(std::istream &file);

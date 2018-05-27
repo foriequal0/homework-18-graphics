@@ -6,8 +6,151 @@
 #include <iostream>
 #include "SweptSurfaceData.hpp"
 #include "QuaternionMap.hpp"
+#include "Interpolate.hpp"
 
 namespace snu_graphics {
+template<typename F>
+std::vector<CrossSection> interpolate_cross_sections(F method, const std::vector<CrossSection> &cross_sections) {
+  std::vector<CrossSection> interpolated;
+  for (auto &cs: cross_sections) {
+    CrossSection tmp;
+    tmp.position = cs.position;
+    tmp.rotation = cs.rotation;
+    tmp.scale = cs.scale;
+
+    for (size_t i = 0; i < cs.points.size(); i++) {
+      const int subdiv = 10;
+      for (int j = 0; j < subdiv; j += 1) {
+        auto t = (float) j / subdiv;
+        auto u = method(cs.points, (int) i, t, true);
+        tmp.points.push_back(u);
+      }
+    }
+    interpolated.push_back(tmp);
+  }
+  return interpolated;
+}
+
+struct AccumulatedNormal {
+  Eigen::Vector3f normal_sum = Eigen::Vector3f {0, 0, 0};
+  float weight_sum = 0;
+
+  void add(Eigen::Vector3f n, float w = 1.0f) {
+    normal_sum += n * w;
+    weight_sum += w;
+  }
+
+  Eigen::Vector3f get() const {
+    return normal_sum / weight_sum;
+  }
+};
+
+std::vector<Triangle> SweptSurfaceData::sweep_surface() const {
+  std::vector<CrossSection> cross_sections;
+  switch (curve_type) {
+  case CurveType::CATMULL_ROM:
+    cross_sections = interpolate_cross_sections(catmull_rom<Bezier, Eigen::Vector3f>, this->cross_sections);
+    break;
+  case CurveType::BSPLINE:cross_sections = interpolate_cross_sections(bspline<Eigen::Vector3f>, this->cross_sections);
+    break;
+  default: assert(false);
+  }
+
+#define FILTER(from, to, expr) \
+  std::transform(std::begin(from), std::end(from), std::back_inserter(to), expr);
+
+  std::vector<float> scales;
+  std::vector<Eigen::Vector3f> positions;
+  std::vector<Eigen::Quaternionf> rotations;
+  FILTER(this->cross_sections, scales, [](const CrossSection &cs) { return cs.scale; });
+  FILTER(this->cross_sections, positions, [](const CrossSection &cs) { return cs.position; });
+  FILTER(this->cross_sections, rotations, [](const CrossSection &cs) { return cs.rotation; });
+#undef FILTER
+  std::vector<std::vector<Eigen::Vector3f>> sweeps;
+  for (size_t j = 0; j < cross_sections[0].points.size(); j++) {
+    std::vector<Eigen::Vector3f> sweep;
+    for (auto &cross_section : cross_sections) {
+      sweep.push_back(cross_section.points[j]);
+    }
+    sweeps.emplace_back(sweep);
+  }
+
+  std::vector<std::vector<Eigen::Vector3f>> points;
+  for (size_t i = 0; i < cross_sections.size() - 1; i += 1) {
+    const auto &cs = cross_sections[i];
+    const int subdiv = 10;
+    for (int j = 0; (i != cross_sections.size() - 2) ? j < subdiv : j < subdiv + 1; j += 1) {
+      std::vector<Eigen::Vector3f> transformed;
+      auto t = (float) j / subdiv;
+      auto scale = catmull_rom<Bezier>(scales, (int) i, t, false);
+      auto pos = catmull_rom<Bezier>(positions, (int) i, t, false);
+      auto rot = quaternion_catmull_rom(rotations, (int) i, t, false);
+
+      for (size_t k = 0; k < cs.points.size(); k++) {
+        auto p = catmull_rom<Bezier>(sweeps[k], int(i), t, false);
+
+        Eigen::Vector3f v = pos + rot.toRotationMatrix() * (scale * p);
+        transformed.emplace_back(v);
+      }
+      points.emplace_back(transformed);
+    }
+  }
+
+  std::vector<std::vector<AccumulatedNormal>> normals;
+  normals.resize(points.size());
+  for (auto &row: normals) {
+    row.resize(points[0].size());
+  }
+
+  for (size_t i = 0; i < points.size() - 1; i++) {
+    assert(points[i].size() == points[i + 1].size());
+    auto sz = points[i].size();
+    for (size_t j = 0; j < sz; j++) {
+      auto k = (j + 1) % sz;
+
+      auto a = points[i][j];
+      auto b = points[i][k];
+      auto c = points[i+1][j];
+      auto normal = (c - a).cross(b - a).normalized();
+      normals[i][j].add(normal);
+      normals[i][k].add(normal);
+      normals[i+1][j].add(normal);
+    }
+  }
+
+  std::vector<Triangle> triangles;
+  for (size_t i = 0; i < points.size() - 1; i++) {
+    auto sz = points[i].size();
+    for (size_t j = 0; j < sz; j++) {
+      auto k = (j + 1) % sz;
+
+      triangles.emplace_back(Triangle {
+        Vertex(points[i][j], normals[i][j].get()),
+        Vertex(points[i+1][j], normals[i+1][j].get()),
+        Vertex(points[i][k], normals[i][k].get()),
+      });
+      triangles.emplace_back(Triangle {
+        Vertex(points[i+1][j], normals[i+1][j].get()),
+        Vertex(points[i+1][k], normals[i+1][k].get()),
+        Vertex(points[i][k], normals[i][k].get())
+      });
+
+      // back face
+      triangles.emplace_back(Triangle {
+        Vertex(points[i][j], -normals[i][j].get()),
+        Vertex(points[i][k], -normals[i][k].get()),
+        Vertex(points[i+1][j], -normals[i+1][j].get()),
+      });
+      triangles.emplace_back(Triangle {
+        Vertex(points[i+1][j], -normals[i+1][j].get()),
+        Vertex(points[i][k], -normals[i][k].get()),
+        Vertex(points[i+1][k], -normals[i+1][k].get()),
+      });
+    }
+  }
+  return triangles;
+}
+
 class comment_filter_streambuf
     : public std::streambuf {
   std::streambuf *src;
@@ -110,4 +253,5 @@ SweptSurfaceData SweptSurfaceData::load(std::istream &s) {
 
   return tmp;
 }
+
 }

@@ -20,9 +20,6 @@ find_package(GLUT REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 include_directories(eigen3 eigen3/unsupported)
 
-# https://stackoverflow.com/questions/21223163/how-to-tell-cmake-to-download-some-necessary-header-files-more-precisely-glm-ma
-
-
 set(SOURCE_FILES
         main.cpp
         Transform.cpp
