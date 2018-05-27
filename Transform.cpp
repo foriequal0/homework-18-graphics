@@ -7,6 +7,7 @@
 #include <Eigen/OpenGLSupport>
 #include "Transform.hpp"
 
+namespace snu_graphics {
 Transform::Guard::Guard(bool entered) : entered(entered) {}
 
 Transform::Guard::~Guard() {
@@ -26,4 +27,5 @@ Transform::Guard Transform::guard() const {
   glScale(scale);
   glRotate(orientation);
   return Transform::Guard(true);
+}
 }

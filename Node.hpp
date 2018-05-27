@@ -13,6 +13,7 @@
 #include "Transform.hpp"
 #include "Drawables.hpp"
 
+namespace snu_graphics {
 class Node : public std::enable_shared_from_this<Node> {
 public:
   std::string name;
@@ -44,5 +45,5 @@ public:
   auto operator[](const std::string &) -> std::shared_ptr<Node>;
   auto operator[](size_t) -> std::shared_ptr<Node>;
 };
-
+}
 #endif //SNU_GRAPHICS_NODE_H

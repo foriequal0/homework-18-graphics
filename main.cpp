@@ -8,6 +8,8 @@
 
 #include "Node.hpp"
 #include "Const.hpp"
+using namespace snu_graphics;
+
 #define ASSERT(pred, otherwise) assert((pred) && (otherwise))
 
 #define radianf(x) ((float)(M_PI/180.0f*x))

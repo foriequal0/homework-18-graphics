@@ -6,12 +6,12 @@
 #include <iostream>
 #include "Node.hpp"
 
+namespace snu_graphics {
 std::shared_ptr<Node> Node::create(
     std::string name,
     Transform transform,
     std::shared_ptr<Drawable> drawable,
-    std::vector<std::shared_ptr<Node>> childs)
-{
+    std::vector<std::shared_ptr<Node>> childs) {
   assert(std::all_of(std::begin(childs), std::end(childs), [](const std::shared_ptr<Node> &child) {
     return child->parent.expired();
   }));
@@ -21,7 +21,7 @@ std::shared_ptr<Node> Node::create(
   node->transform = std::move(transform);
   node->drawable = std::move(drawable);
 
-  for (auto&& child: childs) {
+  for (auto &&child: childs) {
     child->parent = node;
     node->childs_by_name.emplace(child->name, child);
   }
@@ -46,7 +46,7 @@ void Node::insert(std::initializer_list<std::shared_ptr<Node>> nodes) {
   }
 }
 
-bool showaxis = getenv ("AXIS") != nullptr;
+bool showaxis = getenv("AXIS") != nullptr;
 
 void Node::draw() {
   auto guard = transform.guard();
@@ -85,4 +85,5 @@ auto Node::operator[](const std::string &name) -> std::shared_ptr<Node> {
 
 auto Node::operator[](size_t index) -> std::shared_ptr<Node> {
   return get(index);
+}
 }

@@ -7,9 +7,9 @@
 #include "SweptSurfaceData.hpp"
 #include "QuaternionMap.hpp"
 
+namespace snu_graphics {
 class comment_filter_streambuf
-    : public std::streambuf
-{
+    : public std::streambuf {
   std::streambuf *src;
   bool in_comment = false;
   std::vector<char> buf;
@@ -18,7 +18,7 @@ protected:
     buf.reserve(BUFSIZ);
     buf.resize(0);
     int ch;
-    while((ch = src->sbumpc()) != traits_type::eof()){
+    while ((ch = src->sbumpc()) != traits_type::eof()) {
       if (in_comment) {
         if (ch == '\r') {
           continue;
@@ -52,23 +52,22 @@ protected:
   }
 
 public:
-  explicit comment_filter_streambuf(std::streambuf* src)
-      : src(src), in_comment(false)
-  {
+  explicit comment_filter_streambuf(std::streambuf *src)
+      : src(src), in_comment(false) {
     auto front = &buf.front();
-    setg(front, front+1, front+1);
+    setg(front, front + 1, front + 1);
   }
 };
 
-class comment_filter_istream: public std::istream {
+class comment_filter_istream : public std::istream {
   comment_filter_streambuf sb;
 public:
   explicit comment_filter_istream(const std::istream &is)
-      : std::istream(&sb), sb(is.rdbuf())  { }
+      : std::istream(&sb), sb(is.rdbuf()) {}
 };
 
-SweptSurfaceData SweptSurfaceData::load(const std::string& filename) {
-  std::fstream fs { filename, std::fstream::in };
+SweptSurfaceData SweptSurfaceData::load(const std::string &filename) {
+  std::fstream fs{filename, std::fstream::in};
   assert(fs);
   return load(fs);
 }
@@ -92,9 +91,9 @@ SweptSurfaceData SweptSurfaceData::load(std::istream &s) {
   int num_control_points;
   is >> num_cross_section >> num_control_points;
   tmp.num_control_points = num_control_points;
-  for(int i=0; i<num_cross_section; i++) {
+  for (int i = 0; i < num_cross_section; i++) {
     CrossSection cs;
-    for(int j=0; j<num_control_points; j++) {
+    for (int j = 0; j < num_control_points; j++) {
       Eigen::Vector3f point;
       point << 0, 0, 0;
       is >> point.x() >> point.z();
@@ -103,12 +102,13 @@ SweptSurfaceData SweptSurfaceData::load(std::istream &s) {
     is >> cs.scale;
     float w, x, y, z;
     is >> w >> x >> y >> z;
-    Eigen::Vector3f v = sinf(w/2) * Eigen::Vector3f{x, y, z}.normalized();
-    cs.rotation = Eigen::Quaternionf(cosf(w/2), v[0], v[1], v[2]).normalized();
+    Eigen::Vector3f v = sinf(w / 2) * Eigen::Vector3f{x, y, z}.normalized();
+    cs.rotation = Eigen::Quaternionf(cosf(w / 2), v[0], v[1], v[2]).normalized();
     is >> cs.position.x() >> cs.position.y() >> cs.position.z();
 
     tmp.cross_sections.push_back(cs);
   }
 
   return tmp;
+}
 }

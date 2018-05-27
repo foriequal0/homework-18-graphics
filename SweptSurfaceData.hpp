@@ -11,6 +11,7 @@
 #include <Eigen/Dense>
 #include "Transform.hpp"
 
+namespace snu_graphics {
 enum class CurveType {
   BSPLINE, CATMULL_ROM,
 };
@@ -27,8 +28,8 @@ struct SweptSurfaceData {
   int num_control_points;
   std::vector<CrossSection> cross_sections;
 
-  static SweptSurfaceData load(const std::string& filename);
-  static SweptSurfaceData load(std::istream& file);
+  static SweptSurfaceData load(const std::string &filename);
+  static SweptSurfaceData load(std::istream &file);
 };
-
+}
 #endif //SNU_GRAPHICS_SWEPTSURFACEDATA_H

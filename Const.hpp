@@ -7,6 +7,7 @@
 
 #include <Eigen/Dense>
 
+namespace snu_graphics {
 static const Eigen::Vector3f zero = {0.0, 0.0, 0.0};
 static const Eigen::Vector3f ones = {1.0, 1.0, 1.0};
 
@@ -27,5 +28,6 @@ static const Eigen::Vector3f back = {0.0, 0.0, -1.0};
 static const Eigen::Vector3f front = {0.0, 0.0, 1.0};
 
 static const Eigen::Quaternionf identity = {1.0f, 0.0f, 0.0f, 0.0f};
+}
 
 #endif //SNU_GRAPHICS_CONST_H

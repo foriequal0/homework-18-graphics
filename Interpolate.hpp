@@ -11,34 +11,38 @@
 #include <Eigen/Dense>
 #include "QuaternionMap.hpp"
 
+namespace snu_graphics {
 struct Bezier {
   template<typename T>
   static T interpolate(float t, T b0, T b1, T b2, T b3) ;
 };
 
 template<>
-Eigen::Vector3f Bezier::interpolate<Eigen::Vector3f>(float t, Eigen::Vector3f b0, Eigen::Vector3f b1, Eigen::Vector3f b2, Eigen::Vector3f b3);
+Eigen::Vector3f Bezier::interpolate<Eigen::Vector3f>(
+    float t, Eigen::Vector3f b0, Eigen::Vector3f b1, Eigen::Vector3f b2, Eigen::Vector3f b3
+);
 
 template<>
 float Bezier::interpolate<float>(float t, float b0, float b1, float b2, float b3);
 
 struct DeCasteljau {
   template<typename T>
-  static T interpolate(float t, T b0, T b1, T b2, T b3) {
-    T a00 = (1-t)*b0+t*b1;
-    T a01 = (1-t)*b1+t*b2;
-    T a02 = (1-t)*b2+t*b3;
-
-    T a10 = (1-t)*a00+t*a01;
-    T a11 = (1-t)*a01+t*a02;
-
-    T a20 = (1-t)*a10+t*a11;
-    return a20;
-  }
+  static T interpolate(float t, T b0, T b1, T b2, T b3);
 };
 
 template<>
 Eigen::Quaternionf DeCasteljau::interpolate<Eigen::Quaternionf>(float t, Eigen::Quaternionf b0, Eigen::Quaternionf b1, Eigen::Quaternionf b2, Eigen::Quaternionf b3);
+
+struct BSpline {
+  template<typename T>
+  static T approx(float t, T b0, T b1, T b2, T b3);
+};
+
+template<>
+Eigen::Vector3f BSpline::approx<Eigen::Vector3f>(float t, Eigen::Vector3f b0, Eigen::Vector3f b1, Eigen::Vector3f b2, Eigen::Vector3f b3);
+
+template<>
+float BSpline::approx<float>(float t, float b0, float b1, float b2, float b3);
 
 template<typename T>
 const T& safe_get(const std::vector<T>& points, bool closed, int i) {
@@ -58,7 +62,7 @@ template<typename Method, typename T>
 T catmull_rom(const std::vector<T>& points, int index, float t, bool closed=true) {
   const auto size = (int)points.size();
   assert((closed && index < (int)points.size())
-         || (!closed && index < (int)points.size()-1));
+             || (!closed && index < (int)points.size()-1));
 
   T a0 = (safe_get(points, closed, index+1) - safe_get(points, closed, index-1))/2;
   T a1 = (safe_get(points, closed, index+2) - safe_get(points, closed, index))/2;
@@ -71,34 +75,7 @@ T catmull_rom(const std::vector<T>& points, int index, float t, bool closed=true
   return Method::template interpolate<T>(t, p0, p1, p2, p3);
 }
 
-inline Eigen::Quaternionf quaternion_catmull_rom(const std::vector<Eigen::Quaternionf>& points, int index, float t, bool closed=true) {
-  assert((closed && index < (int)points.size())
-             || (!closed && index < (int)points.size()-1));
-
-
-  const auto& b0 = safe_get(points, closed, index-1);
-  const auto& b1 = safe_get(points, closed, index);
-  const auto& b2 = safe_get(points, closed, index+1);
-  const auto& b3 = safe_get(points, closed, index+2);
-
-  const auto& p0 = b1;
-  Eigen::Quaternionf p1 = b1 * expq(logq(b0.conjugate() * b1)/6.0f);
-  Eigen::Quaternionf p2 = b2 * expq(-logq(b1.conjugate() * b3)/6.0f);
-  const auto& p3 = b2;
-
-  return DeCasteljau::template interpolate<Eigen::Quaternionf>(t, p0, p1, p2, p3);
-}
-
-struct BSpline {
-  template<typename T>
-  static T approx(float t, T b0, T b1, T b2, T b3);
-};
-
-template<>
-Eigen::Vector3f BSpline::approx<Eigen::Vector3f>(float t, Eigen::Vector3f b0, Eigen::Vector3f b1, Eigen::Vector3f b2, Eigen::Vector3f b3);
-
-template<>
-float BSpline::approx<float>(float t, float b0, float b1, float b2, float b3);
+Eigen::Quaternionf quaternion_catmull_rom(const std::vector<Eigen::Quaternionf>& points, int index, float t, bool closed=true);
 
 template<typename T>
 T bspline(const std::vector<T>& points, int index, float t, bool closed=true) {
@@ -112,5 +89,5 @@ T bspline(const std::vector<T>& points, int index, float t, bool closed=true) {
 
   return BSpline::template approx<T>(t, p0, p1, p2, p3);
 }
-
+}
 #endif //SNU_GRAPHICS_INTERPOLATE_H

@@ -13,70 +13,72 @@
 #include "Const.hpp"
 #include "SweptSurfaceData.hpp"
 
+
+namespace snu_graphics {
 class Drawable {
 public:
   virtual void draw() const = 0;
 };
 
-class Cube final: public Drawable {
+class Cube final : public Drawable {
 public:
   inline void draw() const override {
     glutSolidCube(1);
   }
 };
 
-class Sphere final: public Drawable {
+class Sphere final : public Drawable {
 public:
   inline void draw() const override {
     glutSolidSphere(1, 16, 16);
   }
 };
 
-class Cylinder final: public Drawable {
+class Cylinder final : public Drawable {
 public:
   inline void draw() const override {
     const auto slices = 16;
 
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat mat_shininess[] = { 50.0 };
+    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat mat_shininess[] = {50.0};
     glPushAttrib(GL_LIGHTING_BIT);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
     glBegin(GL_POLYGON);
     glVertex3f(0, 0.5f, 0);
-    for(auto i=0; i<=slices; i++) {
-      auto rad = static_cast<float>(2*M_PI*i/slices);
-      glVertex3f(sinf(rad)/2, 0.5f, cosf(rad)/2);
+    for (auto i = 0; i <= slices; i++) {
+      auto rad = static_cast<float>(2 * M_PI * i / slices);
+      glVertex3f(sinf(rad) / 2, 0.5f, cosf(rad) / 2);
     }
     glEnd();
 
     glBegin(GL_POLYGON);
-    for(auto i=0; i<=slices; i++) {
-      auto rad = static_cast<float>(2*M_PI*i/slices);
-      glVertex3f(sinf(-rad)/2, -0.5f, cosf(-rad)/2);
+    for (auto i = 0; i <= slices; i++) {
+      auto rad = static_cast<float>(2 * M_PI * i / slices);
+      glVertex3f(sinf(-rad) / 2, -0.5f, cosf(-rad) / 2);
     }
     glEnd();
 
     glBegin(GL_QUAD_STRIP);
-    for(auto i=0; i<=slices; i++) {
-      auto rad = static_cast<float>(2*M_PI*i/slices);
-      glVertex3f(sinf(rad)/2, 0.5f, cosf(rad)/2);
-      glVertex3f(sinf(rad)/2, -0.5f, cosf(rad)/2);
+    for (auto i = 0; i <= slices; i++) {
+      auto rad = static_cast<float>(2 * M_PI * i / slices);
+      glVertex3f(sinf(rad) / 2, 0.5f, cosf(rad) / 2);
+      glVertex3f(sinf(rad) / 2, -0.5f, cosf(rad) / 2);
     }
     glEnd();
     glPopAttrib();
   }
 };
 
-class Cone final: public Drawable {
+class Cone final : public Drawable {
 public:
   inline void draw() const override {
     glutSolidCone(1, 1, 16, 1);
   }
 };
 
-class Torus final: public Drawable {
+class Torus final : public Drawable {
   GLdouble innerRadius;
 public:
   explicit Torus(GLdouble innerRadius) : innerRadius(innerRadius) {}
@@ -86,7 +88,7 @@ public:
   }
 };
 
-class Teapot final: public Drawable {
+class Teapot final : public Drawable {
 public:
   inline void draw() const override {
     glFrontFace(GL_CW);
@@ -95,7 +97,7 @@ public:
   }
 };
 
-class Axis final: public Drawable {
+class Axis final : public Drawable {
   GLfloat size;
 public:
   explicit Axis(GLfloat size = 1) : size(size) {}
@@ -127,8 +129,7 @@ public:
   }
 };
 
-struct Vertex
-{
+struct Vertex {
   GLfloat position[3];
   GLfloat normal[3];
 
@@ -142,12 +143,12 @@ struct Vertex
   }
 };
 
-class SweptSurface final: public Drawable {
+class SweptSurface final : public Drawable {
   std::vector<Vertex> vertices;
 public:
   void draw() const override;
 
   static SweptSurface create(const SweptSurfaceData &data);
 };
-
+}
 #endif //SNU_GRAPHICS_DRAWABLES_H
