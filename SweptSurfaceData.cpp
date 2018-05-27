@@ -9,6 +9,10 @@
 #include "Interpolate.hpp"
 
 namespace snu_graphics {
+
+const int CROSS_SECTION_SUBDIV = 4;
+const int AXIAL_SUBDIV = 4;
+
 template<typename F>
 std::vector<CrossSection> interpolate_cross_sections(F method, const std::vector<CrossSection> &cross_sections) {
   std::vector<CrossSection> interpolated;
@@ -19,9 +23,8 @@ std::vector<CrossSection> interpolate_cross_sections(F method, const std::vector
     tmp.scale = cs.scale;
 
     for (size_t i = 0; i < cs.points.size(); i++) {
-      const int subdiv = 10;
-      for (int j = 0; j < subdiv; j += 1) {
-        auto t = (float) j / subdiv;
+      for (int j = 0; j < CROSS_SECTION_SUBDIV; j += 1) {
+        auto t = (float) j / CROSS_SECTION_SUBDIV;
         auto u = method(cs.points, (int) i, t, true);
         tmp.points.push_back(u);
       }
@@ -78,10 +81,9 @@ std::vector<Triangle> SweptSurfaceData::sweep_surface() const {
   std::vector<std::vector<Eigen::Vector3f>> points;
   for (size_t i = 0; i < cross_sections.size() - 1; i += 1) {
     const auto &cs = cross_sections[i];
-    const int subdiv = 10;
-    for (int j = 0; (i != cross_sections.size() - 2) ? j < subdiv : j < subdiv + 1; j += 1) {
+    for (int j = 0; (i != cross_sections.size() - 2) ? j < AXIAL_SUBDIV : j < AXIAL_SUBDIV + 1; j += 1) {
       std::vector<Eigen::Vector3f> transformed;
-      auto t = (float) j / subdiv;
+      auto t = (float) j / AXIAL_SUBDIV;
       auto scale = catmull_rom<Bezier>(scales, (int) i, t, false);
       auto pos = catmull_rom<Bezier>(positions, (int) i, t, false);
       auto rot = quaternion_catmull_rom(rotations, (int) i, t, false);
@@ -109,12 +111,12 @@ std::vector<Triangle> SweptSurfaceData::sweep_surface() const {
       auto k = (j + 1) % sz;
 
       auto a = points[i][j];
-      auto b = points[i][k];
-      auto c = points[i+1][j];
-      auto normal = (c - a).cross(b - a).normalized();
+      auto b = points[i+1][j];
+      auto c = points[i][k];
+      auto normal = (b - a).cross(c - a).normalized();
       normals[i][j].add(normal);
-      normals[i][k].add(normal);
       normals[i+1][j].add(normal);
+      normals[i][k].add(normal);
     }
   }
 

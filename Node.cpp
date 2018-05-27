@@ -48,18 +48,19 @@ void Node::insert(std::initializer_list<std::shared_ptr<Node>> nodes) {
 
 bool showaxis = getenv("AXIS") != nullptr;
 
-void Node::draw() {
+void Node::draw(Eigen::Vector3f origin) {
   auto guard = transform.guard();
+  auto node_local_origin = transform.to_local(origin);
 
   if (drawable != nullptr) {
-    drawable->draw();
+    drawable->draw(node_local_origin);
   } else {
     if (showaxis) {
-      Axis().draw();
+      Axis().draw(node_local_origin);
     }
   }
   for (auto &&child: childs) {
-    child->draw();
+    child->draw(node_local_origin);
   }
 }
 

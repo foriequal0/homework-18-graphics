@@ -24,6 +24,13 @@ std::shared_ptr<Node> root;
 int WINDOW_WIDTH = 500;
 int WINDOW_HEIGHT = 500;
 
+Eigen::Vector2i windowSize = Eigen::Vector2i(500, 500);
+float fov = 70.0f;
+float distance = 5.0;
+Eigen::Vector3f viewCenter = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+Eigen::Vector3f camDir = -Eigen::Vector3f(1.0, 1.0, 1.0f).normalized();
+Eigen::Vector3f camUp = (up - camDir * camDir.dot(up)).normalized();
+
 using steady_clock = std::chrono::steady_clock;
 using duration = std::chrono::duration<double, std::chrono::seconds::period>;
 using time_point = std::chrono::time_point<steady_clock, duration>;
@@ -35,7 +42,9 @@ void display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glColor3f(1.0, 1.0, 1.0);
   glMatrixMode(GL_MODELVIEW);
-  root->draw();
+
+  Eigen::Vector3f distancedEye = viewCenter - camDir * distance;
+  root->draw(distancedEye);
   deferredDraw();
   glFlush();
   glutSwapBuffers();
@@ -55,24 +64,22 @@ void init() {
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   GLfloat light_direction[] = {-1.0f, -1.0f, 1.0f, 0.0f};
   glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_direction);
-  GLfloat light_ambient[] = {0.0f, 0.2f, 0.8f, 1.0f};
+  GLfloat light_ambient[] = {0.2f, 0.2f, 0.2f, 1.0f};
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-
+  GLfloat light_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  GLfloat light_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+  glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
   root = Node::create("root", Transform());
   root->insert(
       {
-          Node::create("test", Transform(), std::make_shared<SweptSurface>(SweptSurface::create(SweptSurfaceData::load("data/model.txt"))))
+          Node::create("test", Transform(), std::make_shared<SweptSurface>(SweptSurface::create(SweptSurfaceData::load("data/model.txt")))),
+          Node::create("trans", Transform(), std::make_shared<Transparent>(sample_transparent())),
       }
   );
   last_time_point = steady_clock::now();
 }
-
-Eigen::Vector2i windowSize = Eigen::Vector2i(500, 500);
-float fov = 70.0f;
-float distance = 5.0;
-Eigen::Vector3f viewCenter = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
-Eigen::Vector3f camDir = -Eigen::Vector3f(1.0, 1.0, 1.0f).normalized();
-Eigen::Vector3f camUp = (up - camDir * camDir.dot(up)).normalized();
 
 void setView() {
   glViewport(0, 0, static_cast<GLsizei>(windowSize[0]), static_cast<GLsizei>(windowSize[1]));
@@ -211,8 +218,13 @@ void update() {
   }
   double r = t/T;
   float s = sinf(r * 2 * M_PI);
-  s = (s>0)?powf(s, 0.75):-powf(-s, 0.75);
   float c = cosf(r * 2 * M_PI);
+
+
+  GLfloat light_position[] = {-c, 1.0f, -s, 0.0f};
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  GLfloat light_direction[] = {c, -1.0f, s, 0.0f};
+  glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_direction);
 
   glutPostRedisplay();
 }

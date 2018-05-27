@@ -39,7 +39,7 @@ public:
 
   void insert(const std::shared_ptr<Node> &node);
   void insert(std::initializer_list<std::shared_ptr<Node>> node);
-  void draw();
+  void draw(Eigen::Vector3f origin);
   auto get(const std::string &) -> std::shared_ptr<Node>;
   auto get(size_t) -> std::shared_ptr<Node>;
   auto operator[](const std::string &) -> std::shared_ptr<Node>;

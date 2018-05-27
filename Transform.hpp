@@ -16,6 +16,7 @@ public:
   Eigen::Vector3f scale = Eigen::Vector3f(1.0f, 1.0f, 1.0f);
   Eigen::Vector3f position = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
   auto guard() const -> Guard;
+  auto to_local(Eigen::Vector3f) const -> Eigen::Vector3f;
 
   inline Transform &setScale(float x, float y, float z) {
     scale = {x, y, z};

@@ -2,7 +2,7 @@ project(snu_graphics)
 cmake_minimum_required(VERSION 3.8)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "\
--g -Og \
+-g \
 -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization \
 -Wformat=2 -Winit-self -Wmissing-include-dirs \
 -Woverloaded-virtual -Wredundant-decls -Wsign-promo \
@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "\
 -fsanitize=address -fno-omit-frame-pointer -fsanitize=leak -fsanitize=undefined")
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op -Wnoexcept -Wstrict-null-sentinel")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fno-var-tracking-assignments")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
 endif()
@@ -26,7 +26,8 @@ set(SOURCE_FILES
         Drawables.cpp
         Node.cpp
         SweptSurfaceData.cpp
-        Interpolate.cpp)
+        Interpolate.cpp
+        BSP.cpp)
 add_executable(snu_graphics ${SOURCE_FILES})
 add_definitions(-DGL_GLEXT_PROTOTYPES=1)
 target_link_libraries(snu_graphics

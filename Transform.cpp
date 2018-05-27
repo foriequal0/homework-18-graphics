@@ -28,4 +28,8 @@ Transform::Guard Transform::guard() const {
   glRotate(orientation);
   return Transform::Guard(true);
 }
+
+Eigen::Vector3f Transform::to_local(Eigen::Vector3f origin) const {
+  return orientation.toRotationMatrix().transpose() * (origin - position).cwiseQuotient(scale);
+}
 }
