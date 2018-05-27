@@ -115,7 +115,7 @@ Transparent sample_transparent() {
   };
 
   std::vector<MaterialedTriangle> data = {
-      MaterialedTriangle(Triangle{ Vertex(v[0], up), Vertex(v[2], up), Vertex(v[1], up)}, gold),
+      MaterialedTriangle(Triangle{ Vertex(v[0], up), Vertex(v[2], up), Vertex(v[1], up)}, gold ),
       MaterialedTriangle(Triangle{ Vertex(v[0], up), Vertex(v[3], up), Vertex(v[2], up)}, gold),
 
       MaterialedTriangle(Triangle{ Vertex(v[0], back), Vertex(v[1], back), Vertex(v[4], back)}, silver),
@@ -134,23 +134,23 @@ Transparent sample_transparent() {
       MaterialedTriangle(Triangle{ Vertex(v[4], down), Vertex(v[6], down), Vertex(v[7], down)}, pearl),
 
 
-      MaterialedTriangle(Triangle{ Vertex(v2[0], up), Vertex(v2[2], up), Vertex(v2[1], up)}, gold),
-      MaterialedTriangle(Triangle{ Vertex(v2[0], up), Vertex(v2[3], up), Vertex(v2[2], up)}, gold),
+      MaterialedTriangle(Triangle{ Vertex(v2[0], up), Vertex(v2[2], up), Vertex(v2[1], up)}, pearl),
+      MaterialedTriangle(Triangle{ Vertex(v2[0], up), Vertex(v2[3], up), Vertex(v2[2], up)}, pearl),
 
-      MaterialedTriangle(Triangle{ Vertex(v2[0], back), Vertex(v2[1], back), Vertex(v2[4], back)}, silver),
-      MaterialedTriangle(Triangle{ Vertex(v2[1], back), Vertex(v2[5], back), Vertex(v2[4], back)}, silver),
+      MaterialedTriangle(Triangle{ Vertex(v2[0], back), Vertex(v2[1], back), Vertex(v2[4], back)}, red_plastic),
+      MaterialedTriangle(Triangle{ Vertex(v2[1], back), Vertex(v2[5], back), Vertex(v2[4], back)}, red_plastic),
 
-      MaterialedTriangle(Triangle{ Vertex(v2[1], right), Vertex(v2[2], right), Vertex(v2[5], right)}, chrome),
-      MaterialedTriangle(Triangle{ Vertex(v2[2], right), Vertex(v2[6], right), Vertex(v2[5], right)}, chrome),
+      MaterialedTriangle(Triangle{ Vertex(v2[1], right), Vertex(v2[2], right), Vertex(v2[5], right)}, green_rubber),
+      MaterialedTriangle(Triangle{ Vertex(v2[2], right), Vertex(v2[6], right), Vertex(v2[5], right)}, green_rubber),
 
-      MaterialedTriangle(Triangle{ Vertex(v2[2], front), Vertex(v2[3], front), Vertex(v2[6], front)}, red_plastic),
-      MaterialedTriangle(Triangle{ Vertex(v2[3], front), Vertex(v2[7], front), Vertex(v2[6], front)}, red_plastic),
+      MaterialedTriangle(Triangle{ Vertex(v2[2], front), Vertex(v2[3], front), Vertex(v2[6], front)}, silver),
+      MaterialedTriangle(Triangle{ Vertex(v2[3], front), Vertex(v2[7], front), Vertex(v2[6], front)}, silver),
 
-      MaterialedTriangle(Triangle{ Vertex(v2[3], left), Vertex(v2[0], left), Vertex(v2[7], left)}, green_rubber),
-      MaterialedTriangle(Triangle{ Vertex(v2[0], left), Vertex(v2[4], left), Vertex(v2[7], left)}, green_rubber),
+      MaterialedTriangle(Triangle{ Vertex(v2[3], left), Vertex(v2[0], left), Vertex(v2[7], left)}, chrome),
+      MaterialedTriangle(Triangle{ Vertex(v2[0], left), Vertex(v2[4], left), Vertex(v2[7], left)}, chrome),
 
-      MaterialedTriangle(Triangle{ Vertex(v2[4], down), Vertex(v2[5], down), Vertex(v2[6], down)}, pearl),
-      MaterialedTriangle(Triangle{ Vertex(v2[4], down), Vertex(v2[6], down), Vertex(v2[7], down)}, pearl),
+      MaterialedTriangle(Triangle{ Vertex(v2[4], down), Vertex(v2[5], down), Vertex(v2[6], down)}, gold),
+      MaterialedTriangle(Triangle{ Vertex(v2[4], down), Vertex(v2[6], down), Vertex(v2[7], down)}, gold),
   };
 
   std::vector<MaterialedTriangle> tesselated = std::move(data);
