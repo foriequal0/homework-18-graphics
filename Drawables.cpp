@@ -41,6 +41,7 @@ void Transparent::draw(Eigen::Vector3f view_origin) const {
   glEnable( GL_BLEND );
 
   glPushAttrib(GL_LIGHTING_BIT);
+  glDepthMask(GL_FALSE);
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
@@ -83,6 +84,8 @@ void Transparent::draw(Eigen::Vector3f view_origin) const {
   }
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
+
+  glDepthMask(GL_TRUE);
   glPopAttrib();
 }
 
@@ -127,8 +130,8 @@ Transparent sample_transparent() {
       MaterialedTriangle(Triangle{ Vertex(v[2], front), Vertex(v[3], front), Vertex(v[6], front)}, red_plastic),
       MaterialedTriangle(Triangle{ Vertex(v[3], front), Vertex(v[7], front), Vertex(v[6], front)}, red_plastic),
 
-      MaterialedTriangle(Triangle{ Vertex(v[3], left), Vertex(v[0], left), Vertex(v[7], left)}, green_rubber),
-      MaterialedTriangle(Triangle{ Vertex(v[0], left), Vertex(v[4], left), Vertex(v[7], left)}, green_rubber),
+      MaterialedTriangle(Triangle{ Vertex(v[3], left), Vertex(v[0], left), Vertex(v[7], left)}, cyan_rubber),
+      MaterialedTriangle(Triangle{ Vertex(v[0], left), Vertex(v[4], left), Vertex(v[7], left)}, cyan_rubber),
 
       MaterialedTriangle(Triangle{ Vertex(v[4], down), Vertex(v[5], down), Vertex(v[6], down)}, pearl),
       MaterialedTriangle(Triangle{ Vertex(v[4], down), Vertex(v[6], down), Vertex(v[7], down)}, pearl),
@@ -140,8 +143,8 @@ Transparent sample_transparent() {
       MaterialedTriangle(Triangle{ Vertex(v2[0], back), Vertex(v2[1], back), Vertex(v2[4], back)}, red_plastic),
       MaterialedTriangle(Triangle{ Vertex(v2[1], back), Vertex(v2[5], back), Vertex(v2[4], back)}, red_plastic),
 
-      MaterialedTriangle(Triangle{ Vertex(v2[1], right), Vertex(v2[2], right), Vertex(v2[5], right)}, green_rubber),
-      MaterialedTriangle(Triangle{ Vertex(v2[2], right), Vertex(v2[6], right), Vertex(v2[5], right)}, green_rubber),
+      MaterialedTriangle(Triangle{ Vertex(v2[1], right), Vertex(v2[2], right), Vertex(v2[5], right)}, cyan_rubber),
+      MaterialedTriangle(Triangle{ Vertex(v2[2], right), Vertex(v2[6], right), Vertex(v2[5], right)}, cyan_rubber),
 
       MaterialedTriangle(Triangle{ Vertex(v2[2], front), Vertex(v2[3], front), Vertex(v2[6], front)}, silver),
       MaterialedTriangle(Triangle{ Vertex(v2[3], front), Vertex(v2[7], front), Vertex(v2[6], front)}, silver),
